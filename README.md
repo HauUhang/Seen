@@ -15,6 +15,12 @@
 - 📺 B 站覆盖国内版、国际版、港澳台版（按包名精确唤起）
 - 🕘 本地搜索历史（去重、最多 20 条、可清空、点击回填）
 
+## 如何使用
+
+1. 进入本仓库的 [Releases](https://github.com/HauUhang/Seen/releases) 页面，下载最新版本的 **APK 文件**。
+2. 将 APK 传到自己的手机上（微信 / QQ / 数据线均可），点击安装；系统提示「允许安装未知来源应用」时选择允许。
+3. 安装完成后桌面出现「即见」，打开 → 输入想查的内容 → 点对应平台，直达搜索结果页。
+
 ## 打开策略
 
 优先唤起已安装的 App 深链直达搜索页；未安装时降级为浏览器网页搜索。
@@ -47,15 +53,6 @@ B 站搜索按包名逐个尝试，命中即停：
 - AGP 8.13.2 / Gradle 8.13 / Kotlin 1.9.24（JDK 17）
 
 > 若 Android Studio 提示升级 AGP，按提示更新即可，不影响代码逻辑。
-
-## 如何构建
-
-1. 安装 [Android Studio](https://developer.android.com/studio)（Hedgehog 或更新版本，内置 JDK 17）。
-2. 打开本项目文件夹 `JusouApp/`，等待 Gradle 同步（首次会自动下载 Gradle 与依赖）。
-   - 若提示缺少 Gradle Wrapper，选择「Use local gradle distribution」或让 AS 自动生成 wrapper 后再 Sync。
-   - 首次打开若报 `sdk.dir` 缺失，在 `File > Project Structure` 里指定你的 Android SDK 路径。
-3. 连接真机（开启 USB 调试）或启动模拟器（Android 8.0+）。
-4. 点击 Run ▶，或 `Build > Build Bundle(s)/APK(s) > Build APK(s)` 生成安装包。
 
 ## 项目结构
 
