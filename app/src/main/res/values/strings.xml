@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">即见</string>
+    <string name="app_slogan">你的注意力，应该由你自己支配</string>
+    <string name="hint_search">输入想查询的内容…</string>
+    <string name="search_history">搜索历史</string>
+    <string name="clear_history">清空</string>
+    <string name="search">搜索</string>
+    <string name="douyin">抖音</string>
+    <string name="xiaohongshu">小红书</string>
+    <string name="zhihu">知乎</string>
+    <string name="bilibili">哔哩哔哩</string>
+    <string name="short_douyin">抖</string>
+    <string name="short_xhs">红</string>
+    <string name="short_zhihu">知</string>
+    <string name="short_bilibili">B</string>
+    <string name="toast_empty_query">请先输入要查询的内容</string>
+</resources>

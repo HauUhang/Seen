@@ -1,0 +1,11 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 白色实心眼睛，瞳孔镂空（透出背景渐变） -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M30,54 C44,32 64,32 78,54 C64,76 44,76 30,54 Z M54,46 a8,8 0 1,1 0,16 a8,8 0 1,1 0,-16 Z" />
+</vector>
