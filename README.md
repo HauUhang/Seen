@@ -1,5 +1,10 @@
 # 即见（Seen）
 
+<p align="center">
+  <img src="https://github.com/HauUhang/Seen/blob/main/png/app-icon.png" width="200"/>
+  <br>所见即所得
+</p>
+
 一款极简的 Android 工具 App：**一个输入框直达抖音 / 小红书 / 知乎 / 哔哩哔哩的搜索结果页**，绕过打开 App 时的算法推荐流，避免「想搜 A，结果刷了半天 B」的分心问题。
 
 > **你的注意力，应该由你自己支配。**
