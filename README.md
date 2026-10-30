@@ -43,7 +43,7 @@
 - bilibili：国际版已登录
 - 知乎：未安装为登录
 
-https://github.com/user-attachments/assets/c20d8117-7c73-4d74-82ef-205db3a1b410
+https://github.com/user-attachments/assets/328718fc-f9aa-4376-9573-59d190ff64fd
 
 ## 打开策略
 
