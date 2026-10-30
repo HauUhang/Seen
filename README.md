@@ -19,6 +19,15 @@
 - 🎯 四平台一键直达（抖音 / 小红书 / 知乎 / 哔哩哔哩）
 - 📺 B 站覆盖国内版、国际版、港澳台版（按包名精确唤起）
 - 🕘 本地搜索历史（去重、最多 20 条、可清空、点击回填）
+- 🎨 暖白 / 墨绿界面，跟随系统切换深色模式
+- 🧩 双列平台卡片、空历史提示、长关键词省略显示并完整回填
+- 🛡️ 清空历史前确认，空输入与无法打开平台时给出明确反馈
+
+## 界面预览
+
+以下为原生 Android 布局渲染的完整滚动内容，左侧为浅色，右侧为深色。
+
+![即见浅色与深色界面](png/ui-preview.png)
 
 ## 如何使用
 
@@ -68,6 +77,31 @@ B 站搜索按包名逐个尝试，命中即停：
 - AGP 8.13.2 / Gradle 8.13 / Kotlin 1.9.24（JDK 17）
 
 > 若 Android Studio 提示升级 AGP，按提示更新即可，不影响代码逻辑。
+
+## 本地构建与检查
+
+使用 JDK 17 或更高版本，在 Android Studio 中安装 Android SDK Platform 34 和 Build Tools 35.0.0。通过 SDK 设置或本机 `local.properties` 的 `sdk.dir` 指定 SDK 路径。
+
+Windows：
+
+```powershell
+.\gradlew.bat :app:assembleDebug :app:lintDebug :app:testDebugUnitTest
+```
+
+macOS / Linux：
+
+```bash
+bash ./gradlew :app:assembleDebug :app:lintDebug :app:testDebugUnitTest
+```
+
+- 测试版安装包：`app/build/outputs/apk/debug/app-debug.apk`。
+- 交互测试报告：`app/build/reports/tests/testDebugUnitTest/index.html`。
+- 原生布局渲染：`app/build/reports/ui/`，覆盖浅色、深色、320dp 窄屏和 800dp 平板。
+- 自动检查覆盖四平台入口、空输入、历史回填、清空确认、输入恢复与网页降级。第三方 App 的实际搜索落点仍需在安装对应 App 的真机上验证。
+
+界面配色集中在 `res/values/colors.xml` 与 `res/values-night/colors.xml`，平台卡片共用 `res/layout/item_platform.xml`。历史记录沿用原有存储格式。
+
+本轮 UI 优化基于 `main` 分支的 `4aa65ae`，改动保存在本地工作区。2026-10-30 验证结果：Debug 构建通过，12 项自动测试通过，Lint 无错误；仍有 36 条非阻断提示，涉及依赖版本、未引用资源、绘制和代码风格。已人工查看浅色、深色、窄屏和平板渲染图，尚未在真机验证第三方 App 搜索落点、软键盘和读屏操作。
 
 ## 项目结构
 

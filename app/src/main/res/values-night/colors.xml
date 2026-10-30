@@ -1,0 +1,13 @@
+<resources>
+    <color name="primary">#A1D3BA</color>
+    <color name="primary_dark">#BAE3CF</color>
+    <color name="on_primary">#163E30</color>
+    <color name="primary_container">#273E33</color>
+    <color name="background">#151C18</color>
+    <color name="surface">#1F2923</color>
+    <color name="surface_subtle">#26322B</color>
+    <color name="text_primary">#E8EEE8</color>
+    <color name="text_secondary">#A6B5AA</color>
+    <color name="divider">#38463C</color>
+    <color name="error">#FFB4AA</color>
+</resources>

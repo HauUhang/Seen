@@ -9,6 +9,7 @@
 /captures
 .externalNativeBuild
 .cxx
+.local-build/
 *.apk
 *.aab
 *.dm

@@ -1,14 +1,19 @@
 <resources>
-    <color name="primary">#3D5AFE</color>
-    <color name="primary_dark">#2F46D6</color>
+    <color name="primary">#296353</color>
+    <color name="primary_dark">#1E4C40</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="primary_container">#E4EEE7</color>
     <color name="white">#FFFFFF</color>
-    <color name="background">#F5F6FA</color>
+    <color name="background">#F7F8F4</color>
+    <color name="legacy_navigation_bar">#151C18</color>
     <color name="surface">#FFFFFF</color>
-    <color name="text_primary">#1A1A1A</color>
-    <color name="text_secondary">#8A8A8E</color>
-    <color name="divider">#ECEDF1</color>
+    <color name="surface_subtle">#EFF2EC</color>
+    <color name="text_primary">#202D28</color>
+    <color name="text_secondary">#66736B</color>
+    <color name="divider">#DEE5DC</color>
+    <color name="error">#B33C34</color>
     <color name="douyin">#161823</color>
     <color name="xiaohongshu">#FF2442</color>
     <color name="zhihu">#0084FF</color>
-    <color name="bilibili">#FB7299</color>
+    <color name="bilibili">#D94E7B</color>
 </resources>

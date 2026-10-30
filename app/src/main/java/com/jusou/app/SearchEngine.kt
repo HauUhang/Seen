@@ -15,15 +15,15 @@ import java.net.URLEncoder
  */
 object SearchEngine {
 
-    fun open(context: Context, platform: Platform, query: String) {
+    fun open(context: Context, platform: Platform, query: String): Boolean {
         val encoded = encode(query)
 
         for (link in platform.deepLinks(encoded)) {
-            if (tryStart(context, link)) return
+            if (tryStart(context, link)) return true
         }
 
         // 网页兜底
-        tryStart(context, DeepLink(Uri.parse(platform.webUrl(encoded))))
+        return tryStart(context, DeepLink(Uri.parse(platform.webUrl(encoded))))
     }
 
     private fun tryStart(context: Context, link: DeepLink): Boolean =

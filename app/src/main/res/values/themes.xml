@@ -1,11 +1,38 @@
 <resources>
-    <style name="Theme.JusouApp" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Theme.Seen.Base" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        <item name="colorPrimaryContainer">@color/primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/text_primary</item>
         <item name="colorSecondary">@color/primary</item>
         <item name="android:statusBarColor">@color/background</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">@bool/light_system_bars</item>
+        <item name="android:navigationBarColor">@color/legacy_navigation_bar</item>
         <item name="android:windowBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        <item name="colorOutline">@color/divider</item>
+        <item name="colorError">@color/error</item>
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">@color/primary</item>
+    </style>
+
+    <style name="Theme.JusouApp" parent="Theme.Seen.Base" />
+
+    <style name="TextAppearance.Seen.Section" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.Seen.HistoryChip" parent="Widget.Material3.Chip.Assist">
+        <item name="chipBackgroundColor">@color/surface</item>
+        <item name="chipStrokeColor">@color/divider</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipCornerRadius">14dp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="ensureMinTouchTargetSize">true</item>
     </style>
 </resources>
