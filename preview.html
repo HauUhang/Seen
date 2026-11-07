@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>即见 · 本地界面预览</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #e9eeea; color: #202d28; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif; }
+    .notice { padding: 12px 20px; text-align: center; font-size: 13px; color: #40594a; }
+    .phone { width: min(100%, 393px); min-height: 852px; margin: 0 auto 32px; padding: 24px; background: #f7f8f4; box-shadow: 0 12px 40px #223c2c20; }
+    header, .section-head { display: flex; align-items: center; }
+    .logo { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 13px; background: #296353; color: white; font-size: 25px; }
+    .brand { margin-left: 12px; font-size: 22px; font-weight: 700; }
+    .brand-en { margin-left: auto; color: #296353; font-size: 12px; font-weight: 700; }
+    .github-corner { display: grid; place-items: center; width: 48px; height: 48px; margin-left: 4px; border: 0; background: none; color: #296353; }
+    .github-corner svg { width: 24px; height: 24px; fill: currentColor; }
+    h1 { margin: 32px 0 8px; font-size: 32px; line-height: 1.35; }
+    .subtitle { margin: 0; color: #66736b; font-size: 14px; }
+    .search-area { position: relative; margin-top: 28px; }
+    .search { display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 64px; background: white; border: 1px solid #8da99a; border-radius: 18px; }
+    .search span { color: #296353; font-size: 20px; }
+    input[type="search"] { width: 100%; border: 0; outline: 0; background: transparent; color: #202d28; font: inherit; }
+    .helper { margin: 7px 16px 0; color: #66736b; font-size: 12px; }
+    .section-head { margin: 24px 0 14px; min-height: 48px; justify-content: space-between; }
+    h2 { margin: 0; font-size: 16px; }
+    button { cursor: pointer; font: inherit; }
+    .text-button { min-height: 48px; border: 0; background: none; color: #296353; font-size: 13px; }
+    .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .suggest { display: block; width: 100%; min-height: 48px; margin-top: 12px; border: 0; background: none; color: #296353; font-size: 13px; }
+    .card { min-width: 0; min-height: 140px; padding: 16px; text-align: left; border: 1px solid #dee5dc; border-radius: 22px; background: white; color: #202d28; }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; }
+    .badge { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 13px; color: white; font-size: 19px; font-weight: 700; }
+    .arrow { color: #66736b; font-size: 20px; }
+    .card strong, .card small { display: block; overflow-wrap: anywhere; }
+    .card strong { margin-top: 14px; font-size: 16px; }
+    .card small { margin-top: 4px; color: #66736b; font-size: 12px; }
+    .history-panel { position: absolute; z-index: 2; top: calc(100% + 4px); left: 0; width: 100%; max-height: 245px; border: 1px solid #dee5dc; border-radius: 8px; background: white; overflow: hidden; box-shadow: 0 8px 20px #0002; }
+    #history { max-height: 196px; overflow-y: auto; }
+    .history-clear, .history-fill, .history-delete { height: 48px; border: 0; background: none; }
+    .history-clear { width: 100%; padding: 0 16px; border-bottom: 1px solid #dee5dc; text-align: left; color: #66736b; font-size: 13px; }
+    .history-row { display: flex; align-items: center; border-bottom: 1px solid #dee5dc; }
+    .history-fill { flex: 1; min-width: 0; overflow: hidden; padding: 0 8px 0 16px; text-align: left; text-overflow: ellipsis; white-space: nowrap; color: #202d28; font-size: 14px; }
+    .history-delete { width: 48px; flex: none; color: #66736b; font-size: 22px; }
+    footer { margin-top: 32px; text-align: center; color: #66736b; font-size: 12px; }
+    footer small { display: block; margin-top: 10px; font-size: 11px; }
+    dialog { width: min(90vw, 340px); border: 0; border-radius: 8px; padding: 24px; box-shadow: 0 16px 50px #0003; }
+    dialog::backdrop { background: #0006; }
+    dialog h3 { margin: 0 0 16px; font-size: 20px; }
+    dialog label { display: flex; align-items: center; gap: 12px; min-height: 42px; }
+    dialog input { accent-color: #296353; width: 18px; height: 18px; }
+    .actions { display: flex; justify-content: flex-end; gap: 16px; margin-top: 16px; }
+    .actions button { border: 0; background: none; color: #296353; padding: 10px; }
+    .toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: min(320px, calc(100vw - 48px)); padding: 14px 18px; border-radius: 8px; background: #e1e6e3dd; color: #202d28; text-align: center; overflow-wrap: anywhere; box-shadow: 0 6px 24px #0002; }
+    @media (max-width: 393px) { .notice { font-size: 12px; } .phone { box-shadow: none; } }
+  </style>
+</head>
+<body>
+  <div class="notice">本地交互预览，Android 安装包另行提供。尚未上传。</div>
+  <main class="phone">
+    <header><div class="logo">◉</div><div class="brand">即见</div><div class="brand-en">SEEN</div><button class="github-corner" id="github" aria-label="打开 GitHub 仓库" title="打开 GitHub 仓库"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297C5.37 .297 0 5.67 0 12.297c0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.043-1.416-4.043-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.09-.744.083-.729.083-.729 1.205.084 1.838 1.237 1.838 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.605-2.665-.304-5.467-1.333-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.536-1.524.117-3.176 0 0 1.008-.323 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.553 3.297-1.23 3.297-1.23.655 1.652.243 2.873.12 3.176.77.84 1.235 1.91 1.235 3.221 0 4.61-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .319.216.694.825.576C20.565 22.093 24 17.597 24 12.297 24 5.67 18.627.297 12 .297z"/></svg></button></header>
+    <h1>想查什么，<br>即刻看见。</h1>
+    <p class="subtitle">带着问题出发，直达你想要的答案。</p>
+    <div class="search-area"><div class="search"><span>⌕</span><input id="query" type="search" placeholder="你想了解什么？" aria-label="搜索关键词"></div><div class="history-panel" id="historyPanel" hidden><button class="history-clear" id="clear">清空历史记录</button><div id="history"></div></div></div>
+    <div class="helper">输入关键词，再选择下方平台</div>
+    <div class="section-head"><h2>选择搜索平台</h2><button class="text-button" id="manage">管理平台</button></div>
+    <div class="cards" id="cards"></div>
+    <button class="suggest" id="suggest">没有想要的搜索平台<br>可以在 GitHub 上联系我</button>
+    <footer>你的注意力，应该由你自己支配<small>♙ 搜索历史仅保存在本机</small></footer>
+  </main>
+  <dialog id="platformDialog"><h3>选择常用平台</h3><div id="choices"></div><div class="actions"><button id="cancel">取消</button><button id="save">保存</button></div></dialog>
+  <div class="toast" id="toast" hidden></div>
+  <script>
+    const platforms = [
+      ['抖音','抖','视频里的答案','#161823','https://www.douyin.com/search/'],
+      ['小红书','红','生活里的灵感','#ff2442','https://www.xiaohongshu.com/search_result?keyword='],
+      ['知乎','知','多一种观点','#0084ff','https://www.zhihu.com/search?q='],
+      ['哔哩哔哩','B','发现好内容','#d94e7b','https://search.bilibili.com/all?keyword='],
+      ['X','X','实时话题','#161823','https://x.com/search?q='],
+      ['Reddit','r','社区讨论','#ff4500','https://www.reddit.com/search/?q='],
+      ['YouTube','▶','视频内容','#d92032','https://www.youtube.com/results?search_query=']
+    ];
+    let enabled = new Set(platforms.map(p => p[0]));
+    let history = ['周末徒步路线', '咖啡怎么冲'];
+    const cards = document.getElementById('cards');
+    const historyBox = document.getElementById('history');
+    const historyPanel = document.getElementById('historyPanel');
+    const dialog = document.getElementById('platformDialog');
+    const query = document.getElementById('query');
+    let historyOpen = false;
+    let toastTimer;
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message; toast.hidden = false;
+      clearTimeout(toastTimer); toastTimer = setTimeout(() => { toast.hidden = true; }, 2200);
+    }
+    function render() {
+      cards.replaceChildren();
+      platforms.filter(p => enabled.has(p[0])).forEach(p => {
+        const card = document.createElement('button');
+        card.className = 'card';
+        card.innerHTML = `<div class="card-top"><span class="badge" style="background:${p[3]}">${p[1]}</span><span class="arrow">↗</span></div><strong>${p[0]}</strong><small>${p[2]}</small>`;
+        card.onclick = () => {
+          const value = query.value.trim();
+          if (!value) { query.focus(); return; }
+          history = [value, ...history.filter(item => item !== value)].slice(0, 20);
+          historyOpen = false;
+          renderHistory();
+          window.open(p[4] + encodeURIComponent(value), '_blank', 'noopener');
+          query.value = '';
+        };
+        cards.append(card);
+      });
+      renderHistory();
+    }
+    function renderHistory() {
+      historyBox.replaceChildren();
+      const matches = history.filter(item => item.toLocaleLowerCase().includes(query.value.trim().toLocaleLowerCase()));
+      historyPanel.hidden = !historyOpen || !matches.length;
+      matches.forEach(item => {
+        const row = document.createElement('div'); row.className = 'history-row';
+        const fill = document.createElement('button'); fill.className = 'history-fill'; fill.textContent = item;
+        fill.onclick = () => { query.value = item; historyOpen = false; renderHistory(); window.scrollTo({top: 0, behavior: 'smooth'}); };
+        const remove = document.createElement('button'); remove.className = 'history-delete'; remove.textContent = '×';
+        remove.setAttribute('aria-label', `删除历史关键词：${item}`);
+        remove.onclick = () => { history = history.filter(value => value !== item); renderHistory(); showToast(`已删除“${item}”`); };
+        row.append(fill, remove); historyBox.append(row);
+      });
+    }
+    function openHistory() { historyOpen = true; renderHistory(); }
+    query.addEventListener('focus', openHistory);
+    query.addEventListener('click', openHistory);
+    query.addEventListener('input', renderHistory);
+    document.addEventListener('pointerdown', event => {
+      if (!event.target.closest('.search-area')) { historyOpen = false; renderHistory(); }
+    });
+    document.getElementById('manage').onclick = () => {
+      document.getElementById('choices').replaceChildren();
+      platforms.forEach(p => {
+        const label = document.createElement('label');
+        const input = document.createElement('input'); input.type = 'checkbox'; input.value = p[0]; input.checked = enabled.has(p[0]);
+        label.append(input, document.createTextNode(p[0])); document.getElementById('choices').append(label);
+      });
+      dialog.showModal();
+    };
+    document.getElementById('github').onclick = () => window.open('https://github.com/HauUhang/Seen', '_blank', 'noopener');
+    document.getElementById('suggest').onclick = () => window.open('https://github.com/HauUhang/Seen/issues/new', '_blank', 'noopener');
+    document.getElementById('cancel').onclick = () => dialog.close();
+    document.getElementById('save').onclick = () => {
+      const checked = [...document.querySelectorAll('#choices input:checked')].map(input => input.value);
+      if (!checked.length) { alert('至少保留一个搜索平台'); return; }
+      enabled = new Set(checked); dialog.close(); render();
+    };
+    document.getElementById('clear').onclick = () => { if (confirm('清空搜索历史？')) { history = []; renderHistory(); } };
+    render();
+  </script>
+</body>
+</html>

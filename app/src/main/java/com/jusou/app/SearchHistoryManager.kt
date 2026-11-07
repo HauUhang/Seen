@@ -39,4 +39,16 @@ object SearchHistoryManager {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             .edit().remove(KEY).apply()
     }
+
+    fun remove(context: Context, query: String) {
+        val remaining = load(context).filterNot { it == query }
+        if (remaining.isEmpty()) {
+            clear(context)
+        } else {
+            val arr = JSONArray()
+            remaining.forEach { arr.put(it) }
+            context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+                .edit().putString(KEY, arr.toString()).apply()
+        }
+    }
 }

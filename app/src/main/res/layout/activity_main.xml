@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/scrollView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background"
-    android:fillViewport="true"
-    android:scrollbars="none">
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -63,6 +67,17 @@
                     android:textColor="@color/primary"
                     android:textSize="12sp"
                     android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/btnGithub"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="4dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/open_github_repo"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_github"
+                    android:tooltipText="@string/open_github_repo" />
             </LinearLayout>
 
             <TextView
@@ -129,138 +144,36 @@
                     android:text="@string/choose_platform"
                     android:textAppearance="@style/TextAppearance.Seen.Section" />
 
-                <TextView
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnManagePlatforms"
+                    style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="@string/direct_search"
+                    android:minHeight="48dp"
+                    android:text="@string/manage_platforms"
                     android:textColor="@color/primary"
                     android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/platformContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
-                <include
-                    android:id="@+id/btnDouyin"
-                    layout="@layout/item_platform"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-                <Space android:layout_width="12dp" android:layout_height="1dp" />
-                <include
-                    android:id="@+id/btnXhs"
-                    layout="@layout/item_platform"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                android:orientation="vertical">
             </LinearLayout>
 
-            <LinearLayout
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSuggestPlatform"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
-                <include
-                    android:id="@+id/btnZhihu"
-                    layout="@layout/item_platform"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-                <Space android:layout_width="12dp" android:layout_height="1dp" />
-                <include
-                    android:id="@+id/btnBilibili"
-                    layout="@layout/item_platform"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/historySection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/search_history"
-                        android:textAppearance="@style/TextAppearance.Seen.Section" />
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/tvClearHistory"
-                        style="@style/Widget.Material3.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minWidth="48dp"
-                        android:minHeight="48dp"
-                        android:text="@string/clear_history"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp" />
-                </LinearLayout>
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chipGroup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:chipSpacingHorizontal="8dp"
-                    app:chipSpacingVertical="0dp" />
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/historyEmpty"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    app:cardBackgroundColor="@color/surface_subtle"
-                    app:cardCornerRadius="18dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:padding="18dp">
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:importantForAccessibility="no"
-                            android:src="@drawable/ic_history" />
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="14dp"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/history_empty_title"
-                                android:textColor="@color/text_primary"
-                                android:textSize="13sp" />
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="6dp"
-                                android:lineSpacingExtra="2dp"
-                                android:text="@string/history_empty_description"
-                                android:textColor="@color/text_secondary"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
+                android:minHeight="48dp"
+                android:text="@string/suggest_platform"
+                android:textAllCaps="false"
+                android:textColor="@color/primary"
+                android:textSize="13sp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -284,4 +197,21 @@
                 app:drawableStartCompat="@drawable/ic_lock" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/deleteNotice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="24dp"
+        android:background="@drawable/bg_delete_notice"
+        android:elevation="8dp"
+        android:gravity="center"
+        android:maxWidth="320dp"
+        android:paddingHorizontal="18dp"
+        android:paddingVertical="14dp"
+        android:textColor="@color/delete_notice_text"
+        android:textSize="14sp"
+        android:visibility="gone" />
+</FrameLayout>

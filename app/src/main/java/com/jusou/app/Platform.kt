@@ -10,14 +10,17 @@ data class DeepLink(val uri: Uri, val packageName: String? = null)
 
 /**
  * 支持的搜索平台。
- * deepLinks 返回按优先级排列的原生 App 深链，webUrl 是网页搜索的兜底地址。
- * 各平台的 scheme / 路径若随版本变化，可在此集中修改。
+ * deepLinks 返回按优先级排列的原生 App 深链；没有已知稳定深链的平台直接使用 webUrl。
+ * 各平台的搜索地址若随版本变化，可在此集中修改。
  */
 enum class Platform(val title: String, val short: String) {
     DOUYIN("抖音", "抖"),
     XIAOHONGSHU("小红书", "红"),
     ZHIHU("知乎", "知"),
-    BILIBILI("哔哩哔哩", "B");
+    BILIBILI("哔哩哔哩", "B"),
+    X("X", "X"),
+    REDDIT("Reddit", "r"),
+    YOUTUBE("YouTube", "▶");
 
     fun deepLinks(encodedQuery: String): List<DeepLink> = when (this) {
         DOUYIN -> listOf(
@@ -40,6 +43,7 @@ enum class Platform(val title: String, val short: String) {
             // 通用兜底：不指定包名，交给系统选择已安装的版本
             DeepLink(Uri.parse("bilibili://search?keyword=$encodedQuery")),
         )
+        X, REDDIT, YOUTUBE -> emptyList()
     }
 
     fun webUrl(encodedQuery: String): String = when (this) {
@@ -47,5 +51,8 @@ enum class Platform(val title: String, val short: String) {
         XIAOHONGSHU -> "https://www.xiaohongshu.com/search_result?keyword=$encodedQuery"
         ZHIHU -> "https://www.zhihu.com/search?type=content&q=$encodedQuery"
         BILIBILI -> "https://search.bilibili.com/all?keyword=$encodedQuery"
+        X -> "https://x.com/search?q=$encodedQuery"
+        REDDIT -> "https://www.reddit.com/search/?q=$encodedQuery"
+        YOUTUBE -> "https://www.youtube.com/results?search_query=$encodedQuery"
     }
 }

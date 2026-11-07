@@ -1,0 +1,9 @@
+<resources>
+    <item name="btnDouyin" type="id" />
+    <item name="btnXhs" type="id" />
+    <item name="btnZhihu" type="id" />
+    <item name="btnBilibili" type="id" />
+    <item name="btnX" type="id" />
+    <item name="btnReddit" type="id" />
+    <item name="btnYoutube" type="id" />
+</resources>

@@ -1,12 +1,20 @@
 package com.jusou.app
 
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.text.TextUtils
 import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.PopupWindow
+import android.widget.Space
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -16,48 +24,69 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
-import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.jusou.app.databinding.ActivityMainBinding
+import com.jusou.app.databinding.ItemHistoryRowBinding
 import com.jusou.app.databinding.ItemPlatformBinding
+import com.jusou.app.databinding.ViewHistoryPopupBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var historyBinding: ViewHistoryPopupBinding
+    private lateinit var historyPopup: PopupWindow
+    private val platformCards = mutableMapOf<Platform, View>()
+    private var hideDeleteNotice: Runnable? = null
+    private var historyRequested = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        historyBinding = ViewHistoryPopupBinding.inflate(layoutInflater)
+        historyPopup = PopupWindow(
+            historyBinding.root,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            false,
+        ).apply {
+            isOutsideTouchable = true
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            inputMethodMode = PopupWindow.INPUT_METHOD_NEEDED
+            softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+            elevation = dp(8).toFloat()
+        }
         setupViews()
+        renderPlatforms()
         renderHistory()
     }
 
-    private fun setupViews() {
-        setupPlatform(binding.btnDouyin, Platform.DOUYIN, R.string.douyin_description,
-            R.drawable.bg_avatar_douyin, R.drawable.ic_douyin)
-        setupPlatform(binding.btnXhs, Platform.XIAOHONGSHU, R.string.xhs_description,
-            R.drawable.bg_avatar_xhs)
-        setupPlatform(binding.btnZhihu, Platform.ZHIHU, R.string.zhihu_description,
-            R.drawable.bg_avatar_zhihu)
-        setupPlatform(binding.btnBilibili, Platform.BILIBILI, R.string.bilibili_description,
-            R.drawable.bg_avatar_bilibili, R.drawable.ic_bilibili)
+    override fun onDestroy() {
+        hideHistory()
+        super.onDestroy()
+    }
 
+    private fun setupViews() {
         binding.etQuery.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
             override fun afterTextChanged(s: Editable?) {
                 if (!s.isNullOrBlank()) binding.searchInput.error = null
+                if (historyRequested) showHistory()
             }
         })
+        binding.etQuery.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) showHistory()
+        }
+        binding.etQuery.setOnClickListener { showHistory() }
 
         // A keyboard action never guesses which platform the user intended.
         binding.etQuery.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (validateQuery()) {
                     hideKeyboard()
-                    binding.btnDouyin.root.requestFocus()
+                    platformCards.values.firstOrNull()?.requestFocus()
                     Toast.makeText(this, R.string.choose_platform_prompt, Toast.LENGTH_SHORT).show()
                 }
                 true
@@ -66,7 +95,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.tvClearHistory.setOnClickListener {
+        historyBinding.tvClearHistory.setOnClickListener {
             MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.clear_history_title)
                 .setMessage(R.string.clear_history_message)
@@ -78,12 +107,107 @@ class MainActivity : AppCompatActivity() {
                 .show()
         }
 
-        binding.chipGroup.addOnLayoutChangeListener { _, left, _, right, _, oldLeft, _, oldRight, _ ->
-            if (right - left != oldRight - oldLeft) {
-                for (index in 0 until binding.chipGroup.childCount) {
-                    (binding.chipGroup.getChildAt(index) as Chip).maxWidth = right - left
+        binding.btnManagePlatforms.setOnClickListener { showPlatformManager() }
+        binding.btnGithub.setOnClickListener { openGithub(R.string.github_repo_url) }
+        binding.btnSuggestPlatform.setOnClickListener { openGithub(R.string.github_new_issue_url) }
+
+    }
+
+    private fun showHistory() {
+        historyRequested = true
+        renderHistory()
+        if (historyBinding.historyList.childCount == 0) return
+        binding.searchInput.post {
+            if (!historyRequested || historyBinding.historyList.childCount == 0 || isFinishing || isDestroyed) return@post
+            val anchor = binding.searchInput
+            binding.scrollView.scrollTo(0, maxOf(0, anchor.top - dp(16)))
+            historyPopup.width = anchor.width.takeIf { it > 0 }
+                ?: (minOf(resources.configuration.screenWidthDp - 48, 560) * resources.displayMetrics.density).toInt()
+            historyPopup.height = historyPopupHeight()
+            if (historyPopup.isShowing) {
+                historyPopup.update(anchor, 0, dp(4), historyPopup.width, historyPopup.height)
+            } else {
+                historyPopup.showAsDropDown(anchor, 0, dp(4))
+            }
+        }
+    }
+
+    private fun hideHistory() {
+        historyRequested = false
+        historyPopup.dismiss()
+    }
+
+    private fun historyPopupHeight(): Int = dp(minOf(245, 49 + historyBinding.historyList.childCount * 49))
+
+    private fun renderPlatforms() {
+        val enabled = Platform.values().filter { it in PlatformPreferences.enabled(this) }
+        binding.platformContainer.removeAllViews()
+        platformCards.clear()
+        enabled.chunked(2).forEachIndexed { rowIndex, platforms ->
+            val row = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                setBaselineAligned(false)
+                if (rowIndex > 0) setPadding(0, dp(12), 0, 0)
+            }
+            binding.platformContainer.addView(row)
+            platforms.forEachIndexed { index, platform ->
+                if (index > 0) row.addView(Space(this), LinearLayout.LayoutParams(dp(12), 1))
+                val card = ItemPlatformBinding.inflate(layoutInflater, row, false)
+                val (description, background, icon) = when (platform) {
+                    Platform.DOUYIN -> Triple(R.string.douyin_description, R.drawable.bg_avatar_douyin, R.drawable.ic_douyin)
+                    Platform.XIAOHONGSHU -> Triple(R.string.xhs_description, R.drawable.bg_avatar_xhs, null)
+                    Platform.ZHIHU -> Triple(R.string.zhihu_description, R.drawable.bg_avatar_zhihu, null)
+                    Platform.BILIBILI -> Triple(R.string.bilibili_description, R.drawable.bg_avatar_bilibili, R.drawable.ic_bilibili)
+                    Platform.X -> Triple(R.string.x_description, R.drawable.bg_avatar_x, null)
+                    Platform.REDDIT -> Triple(R.string.reddit_description, R.drawable.bg_avatar_reddit, null)
+                    Platform.YOUTUBE -> Triple(R.string.youtube_description, R.drawable.bg_avatar_youtube, null)
+                }
+                setupPlatform(card, platform, description, background, icon)
+                card.root.id = when (platform) {
+                    Platform.DOUYIN -> R.id.btnDouyin
+                    Platform.XIAOHONGSHU -> R.id.btnXhs
+                    Platform.ZHIHU -> R.id.btnZhihu
+                    Platform.BILIBILI -> R.id.btnBilibili
+                    Platform.X -> R.id.btnX
+                    Platform.REDDIT -> R.id.btnReddit
+                    Platform.YOUTUBE -> R.id.btnYoutube
+                }
+                row.addView(card.root, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+                platformCards[platform] = card.root
+            }
+            if (platforms.size == 1) row.addView(Space(this), LinearLayout.LayoutParams(dp(12), 1))
+            if (platforms.size == 1) row.addView(Space(this), LinearLayout.LayoutParams(0, 1, 1f))
+        }
+    }
+
+    private fun showPlatformManager() {
+        val platforms = Platform.values()
+        val selected = PlatformPreferences.enabled(this).toMutableSet()
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.manage_platforms_title)
+            .setMultiChoiceItems(platforms.map { it.title }.toTypedArray(),
+                platforms.map { it in selected }.toBooleanArray()) { dialog, which, checked ->
+                if (checked) selected.add(platforms[which]) else selected.remove(platforms[which])
+                if (selected.isEmpty()) {
+                    selected.add(platforms[which])
+                    (dialog as androidx.appcompat.app.AlertDialog).listView.setItemChecked(which, true)
+                    Toast.makeText(this, R.string.manage_platforms_message, Toast.LENGTH_SHORT).show()
                 }
             }
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton(R.string.save) { _, _ ->
+                PlatformPreferences.save(this, selected)
+                renderPlatforms()
+            }
+            .show()
+    }
+
+    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
+
+    private fun openGithub(@StringRes url: Int) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(url)))
+        if (runCatching { startActivity(intent) }.isFailure) {
+            Snackbar.make(binding.root, R.string.github_unavailable, Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -126,6 +250,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideKeyboard() {
+        hideHistory()
         WindowCompat.getInsetsController(window, binding.root).hide(WindowInsetsCompat.Type.ime())
         binding.etQuery.clearFocus()
     }
@@ -136,38 +261,51 @@ class MainActivity : AppCompatActivity() {
         hideKeyboard()
         if (SearchEngine.open(this, platform, q)) {
             SearchHistoryManager.add(this, q)
+            binding.etQuery.text?.clear()
             renderHistory()
         } else {
             Snackbar.make(binding.root, R.string.search_unavailable, Snackbar.LENGTH_LONG).show()
         }
     }
 
+    private fun showDeleteNotice(item: String) {
+        hideDeleteNotice?.let { binding.deleteNotice.removeCallbacks(it) }
+        binding.deleteNotice.text = getString(R.string.history_removed, item)
+        binding.deleteNotice.visibility = View.VISIBLE
+        binding.deleteNotice.announceForAccessibility(binding.deleteNotice.text)
+        val dismiss = Runnable { binding.deleteNotice.visibility = View.GONE }
+        hideDeleteNotice = dismiss
+        binding.deleteNotice.postDelayed(dismiss, 1800L)
+    }
+
     private fun renderHistory() {
-        val items = SearchHistoryManager.load(this)
-        binding.chipGroup.removeAllViews()
-        binding.tvClearHistory.visibility = if (items.isEmpty()) View.GONE else View.VISIBLE
-        binding.historyEmpty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
-        binding.chipGroup.visibility = if (items.isEmpty()) View.GONE else View.VISIBLE
-        val availableWidth = binding.chipGroup.width.takeIf { it > 0 }
-            ?: (minOf(resources.configuration.screenWidthDp - 48, 560) * resources.displayMetrics.density).toInt()
+        val query = query()
+        val items = SearchHistoryManager.load(this).filter { query.isEmpty() || it.contains(query, ignoreCase = true) }
+        historyBinding.historyList.removeAllViews()
         for (item in items) {
-            val chip = (layoutInflater.inflate(R.layout.item_history_chip, binding.chipGroup, false) as Chip).apply {
-                text = item
-                contentDescription = getString(R.string.history_fill, item)
-                isCheckable = false
-                isClickable = true
-                isFocusable = true
-                maxWidth = availableWidth
-                setSingleLine(true)
-                ellipsize = TextUtils.TruncateAt.END
-                setOnClickListener {
-                    binding.etQuery.setText(item)
-                    binding.etQuery.setSelection(item.length)
-                    hideKeyboard()
-                    binding.scrollView.smoothScrollTo(0, 0)
-                }
+            val row = ItemHistoryRowBinding.inflate(layoutInflater, historyBinding.historyList, false)
+            row.historyQuery.text = item
+            row.historyQuery.contentDescription = getString(R.string.history_fill, item)
+            row.historyQuery.setOnClickListener {
+                hideHistory()
+                binding.etQuery.setText(item)
+                binding.etQuery.setSelection(item.length)
+                hideKeyboard()
+                binding.scrollView.smoothScrollTo(0, 0)
             }
-            binding.chipGroup.addView(chip)
+            row.btnDeleteHistory.contentDescription = getString(R.string.history_remove, item)
+            row.btnDeleteHistory.setOnClickListener {
+                SearchHistoryManager.remove(this, item)
+                renderHistory()
+                showDeleteNotice(item)
+            }
+            historyBinding.historyList.addView(row.root)
+        }
+        if (items.isEmpty()) {
+            historyPopup.dismiss()
+        } else if (historyPopup.isShowing) {
+            historyPopup.height = historyPopupHeight()
+            historyPopup.update(historyPopup.width, historyPopup.height)
         }
     }
 }

@@ -16,4 +16,8 @@
     <color name="xiaohongshu">#FF2442</color>
     <color name="zhihu">#0084FF</color>
     <color name="bilibili">#D94E7B</color>
+    <color name="x_platform">#161823</color>
+    <color name="reddit">#FF4500</color>
+    <color name="youtube">#D92032</color>
+    <color name="delete_notice_text">#202D28</color>
 </resources>
